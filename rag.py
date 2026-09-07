@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import chromadb
 from sentence_transformers import SentenceTransformer
 
@@ -6,7 +8,8 @@ from sentence_transformers import SentenceTransformer
 # CONFIGURATION
 # =========================
 
-CHROMA_DIR = "chroma_db"
+BASE_DIR = Path(__file__).resolve().parent
+CHROMA_DIR = BASE_DIR / "chroma_db"
 
 COLLECTION_NAME = "government_services"
 
@@ -24,9 +27,7 @@ model = SentenceTransformer(
 # CHROMA DATABASE
 # =========================
 
-client = chromadb.PersistentClient(
-    path=CHROMA_DIR
-)
+client = chromadb.PersistentClient(path=str(CHROMA_DIR))
 
 collection = client.get_or_create_collection(
     name=COLLECTION_NAME

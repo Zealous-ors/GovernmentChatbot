@@ -1,7 +1,9 @@
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from groq import Groq
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from config import GROQ_API_KEY
 from rag import search_documents, build_context
@@ -15,6 +17,8 @@ app = FastAPI(
     title="Tanzania Government Services AI Chatbot"
 )
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 client = Groq(
     api_key=GROQ_API_KEY
 )
@@ -26,7 +30,7 @@ client = Groq(
 
 class ChatRequest(BaseModel):
     message: str
-    history: list[dict] = []
+    history: list[dict] = Field(default_factory=list)
 
 
 # =========================
@@ -301,17 +305,17 @@ Accuracy is more important than creativity.
 
 @app.get("/")
 def home():
-    return FileResponse("frontend/index.html")
+    return FileResponse(BASE_DIR / "frontend" / "index.html")
 
 
 @app.get("/style.css")
 def style():
-    return FileResponse("frontend/style.css")
+    return FileResponse(BASE_DIR / "frontend" / "style.css")
 
 
 @app.get("/app.js")
 def javascript():
-    return FileResponse("frontend/app.js")
+    return FileResponse(BASE_DIR / "frontend" / "app.js")
 
 
 # =========================
